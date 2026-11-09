@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create a reusable Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
@@ -60,16 +60,7 @@ export async function Logout() {
 }
 
 // Get logged-in user
-export async function getMe() {
-  try {
-    const response = await api.post("/api/auth/get-me");
-
-    return response.data;
-  } catch (err) {
-    console.error(
-      "Fetching user failed:",
-      err.response?.data || err.message
-    );
-    throw err;
-  }
-}
+export const getMe = async () => {
+  const response = await api.get('/api/auth/get-me');
+  return response.data;
+};

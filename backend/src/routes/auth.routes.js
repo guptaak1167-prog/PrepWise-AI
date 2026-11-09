@@ -34,5 +34,5 @@ router.post('/login',authController.loginUserController);
 }); //just for checking backend is connected or not
 
 
-router.post('/get-me',middleware.authCheck,authController.getMeController);
+router.get('/get-me',middleware.authCheck,authController.getMeController);
 module.exports=router;
