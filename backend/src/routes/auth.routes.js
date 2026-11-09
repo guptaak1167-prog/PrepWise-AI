@@ -21,7 +21,7 @@ router.post('/login',authController.loginUserController);
  * @description clear token from user cookie and add token in blacklist
  * @public
  * */
- router.post('/logout',authController.logoutUserController);
+ router.get('/logout',authController.logoutUserController);
  /**
  * @route GET/api/auth/get-me
  * @description  check token is valid or not and showing details of user that make request
