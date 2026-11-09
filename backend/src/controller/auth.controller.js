@@ -2,6 +2,15 @@ const UserModel=require('../models/usermodel.js');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const tokenBlackListModel=require('../models/blacklist')
+
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  maxAge: 24 * 60 * 60 * 1000,
+};
+
 /**
  * @name registerUserController
  * @description register a new user,expects username,email and password in request body
@@ -33,8 +42,10 @@ async function registerUserController(req,res)
     },process.env.JWT_SECRET,
     {expiresIn:'1d'}
     )
-    res.cookie("token",token);
-    res.status(201).json({message:"User registered successfully",user:{id:user._id,username:user.name,email:user.email}//can frontend requires data of the user to so which user is registred
+    // res.cookie("token",token);
+    res.cookie('token', token, cookieOptions);
+
+    res.status(201).json({message:"User registered successfully",user:{id:user._id,username:user.username,email:user.email}//can frontend requires data of the user to so which user is registred
     }
   )
 
@@ -65,9 +76,9 @@ async function loginUserController(req,res){
     },process.env.JWT_SECRET,
     {expiresIn:'1d'}
     )
-  res.cookie("token",token);
+  res.cookie("token",token,cookieOptions);
 
-  res.status(200).json({message:"User loggedIn succesfully",user:{id:user._id,username:user.name,email:user.email}})
+  res.status(200).json({message:"User loggedIn succesfully",user:{id:user._id,username:user.username,email:user.email}})
 
 }
 
@@ -79,7 +90,7 @@ async function logoutUserController(req,res){
       await tokenBlackListModel.create({ token });
     }
   }
-  res.clearCookie("token");//used to clear the cookies from the browser
+  res.clearCookie("token", cookieOptions);//used to clear the cookies from the browser
   res.status(200).json({message:"user logged out successfully"});
 }
 
@@ -91,7 +102,7 @@ async function logoutUserController(req,res){
 //     user:{
 //       id:user._id,
 //       username:user.username,
-//       email:user.username
+//       email:user.email
 //     }
 //   })
 // }
